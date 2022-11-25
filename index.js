@@ -1,18 +1,26 @@
-// index.js
-const { fetchCoordsByIP, } = require('./iss');
+const { nextISSTimesForMyLocation } = require('./iss');
 
-// The code below is temporary and can be commented out.
-
-fetchCoordsByIP('142.188.76.78', (error, coordinates) => {
+const printPassTimes = (passTimes) => {
   
-  if (error) {
+  for (const pass of passTimes) {
 
-    console.log("It didn't work!" , error);
+    const datetime = new Date(0);
 
-    return;
-    
+    datetime.setUTCSeconds(pass.risetime);
+
+    const duration = pass.duration;
+
+    console.log(`Next pass at ${datetime} for ${duration} seconds!`);
+  
   }
 
-  console.log('It worked! Returned coordinates:' , coordinates);
+};
+
+nextISSTimesForMyLocation((error, passTimes) => {
+  
+  if (error) return console.log("It didn't work!", error);
+  
+  
+  printPassTimes(passTimes);
 
 });
