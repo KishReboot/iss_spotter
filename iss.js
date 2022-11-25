@@ -18,4 +18,26 @@ const fetchMyIP = (callback) => {
 
 };
 
-module.exports = { fetchMyIP };
+const fetchCoordsByIP = (ip, callback) => {
+
+  request(`http://ipwho.is/${ip}`,(error, response, body) => {
+    
+    if (error) return callback(error, null);
+    
+    // parse the returned body so we can check its information
+    const parsedBody = JSON.parse(body);
+      // check if "success" is true or not
+      if (!parsedBody.success) {
+        const message = `Success status was ${parsedBody.success}. Server message says: ${parsedBody.message} when fetching for IP ${parsedBody.ip}`;
+        callback(Error(message), null);
+        return;
+      }
+
+    const { latitude, longitude } = parsedBody;
+
+    callback(null, {latitude, longitude});
+  });
+
+};
+
+module.exports = { fetchCoordsByIP };
